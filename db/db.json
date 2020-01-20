@@ -1,22 +1,17 @@
 [
   {
     "title": "Note 1",
-    "text": "Text for note 1\nwith multiple lines\n3 to be exact.",
+    "text": "Some text here to work with",
     "id": 1
   },
   {
-    "title": "Note 3 for a 3rd time",
-    "text": "Keeps going",
+    "title": "Another note",
+    "text": "why not 2?",
     "id": 2
   },
   {
-    "title": "No editing?",
-    "text": "Can't edit notes",
+    "title": "Regards",
+    "text": "34423",
     "id": 3
-  },
-  {
-    "title": "4th msg",
-    "text": "sdfsasad",
-    "id": 4
   }
 ]

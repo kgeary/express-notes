@@ -4,9 +4,16 @@ const path = require('path')
 const fs = require('fs')
 
 // globals
+const _debug = process.argv[2] === "debug";
 const app = express();
 const port = 3000;
 const path_public = path.join(__dirname, 'public'); // Need an absolute path
+
+function debug(...str) {
+  if (_debug) {
+    console.log(...str);
+  }
+}
 
 /** 
   * Load notes from db file into array
@@ -17,11 +24,13 @@ const path_public = path.join(__dirname, 'public'); // Need an absolute path
 function loadNotes() {
   let notes;
   try {
+    debug("Loading...");
     const data = fs.readFileSync('./db/db.json', 'utf8');
     notes = JSON.parse(data);
     indexNotes(notes);
-    console.log("NOTES", notes);
+    debug("NOTES", notes);
   } catch (err) {
+    // If no initial database found start with an empty list
     notes = [];
   }
   return notes;
@@ -33,13 +42,12 @@ function loadNotes() {
   * @param notes The notes object array
   */
 function saveNotes(notes) {
-  indexNotes(notes);
   fs.writeFileSync('./db/db.json', JSON.stringify(notes, null, 2));
 }
 
 
 /** 
-  * Re-index the IDs of the notes object array following a deletion
+  * Make sure each note in the array has a unique id
   * 
   * @param notes The notes object array
   */
@@ -63,55 +71,50 @@ function init() {
 
   // Setup Routing
  
-  //***************************
-  // GET /notes
-  //***************************
   app.get('/notes', (req, res) => {
+    // Return the notes html page
     res.sendFile('notes.html', { root: path_public });
   });
 
-  //***************************
-  // GET /api/notes
-  //***************************
-  app.get('/api/notes', (req, res) => {
-    // Request to get all notes
-    console.log("GET NOTES");
-    res.send(notes);
-  });
+  // Route [get, post] /api/notes
+  app.route('/api/notes')
+    .get((req, res) => {
+      // Request to get all notes, returns notes array
+      debug("GET NOTES");
+      res.send(notes);
+    })
 
-  //***************************
-  // POST /api/notes
-  //***************************
-  app.post('/api/notes', (req, res) => {
-    // Request to add new note
-    console.log("POST NOTE BODY", req.body);
-    // Make sure the
-    if (req.body) {
-      // Create a new ID field in the object
-      req.body.id = notes.length + 1;
-      // Push the new note to the array
-      notes.push(req.body);
-      // Write the array to file
-      saveNotes(notes);
-      // Send the response
-      res.send(notes[notes.length - 1]);
-    } else {
-      res.status(400).send("Missing Payload");
-    }
-  });
+    .post((req, res) => {
+      // Request to add new note
+      debug("POST NOTE BODY", req.body);
+      // Make sure the
+      if (req.body) {
+        // Add a new id field to the note object
+        // Push the note to the notes array
+        // Save the notes array to file
+        // Send the response (new note object)
+        req.body.id = notes.length + 1;
+        notes.push(req.body);
+        saveNotes(notes);
+        res.send(notes[notes.length - 1]);
+      } else {
+        res.status(400).send("Missing Payload");
+      }
+    });
 
-  //***************************
-  // DELETE /api/notes/:id
-  //***************************
   app.delete('/api/notes/:id', (req, res) => {
     // Request to Delete existing note
-    console.log("DELETE NOTE", req.params);
-    // Convert ID into Array index
+    // Convert id to an array index
+    // Make sure the index is valid before deleting
+    debug("DELETE NOTE", req.params);
     const index = req.params.id - 1;
-    // Make sure the index is valid
     if (index >= 0 && index < notes.length) {
-      // Remove that index from the array then update db.json
+      // Remove the note at index from the array 
+      // re-index the Notes 
+      // Save the array to file
+      // Return the removed note
       let removed = notes.splice(index, 1);
+      indexNotes(notes);
       saveNotes(notes);
       res.send(removed[0]);
     } else {
@@ -119,17 +122,13 @@ function init() {
     }
   });
 
-  //***************************
-  // GET (Default Route)
-  //***************************
+  // GET (Default Route, Anything not caught above will filter here)
   app.get('*', (req, res) => {
     res.sendFile('index.html', { root: path_public });
   });
 
-  //***************************
   // Start the server
-  //***************************
-  app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+  app.listen(port, () => console.log(`Note app listening on port ${port}!`));
 }
 
 // Kickoff the application
