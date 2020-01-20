@@ -6,7 +6,7 @@ const fs = require('fs')
 // globals
 const _debug = process.argv[2] === "debug";
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 80;
 const path_public = path.join(__dirname, 'public'); // Need an absolute path
 
 function debug(...str) {
