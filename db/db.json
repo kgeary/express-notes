@@ -1,17 +1,17 @@
 [
   {
-    "title": "Note 1",
+    "title": "First Note",
     "text": "Some text here to work with",
     "id": 1
   },
   {
     "title": "Another note",
-    "text": "why not 2?",
+    "text": "This is the 2nd note",
     "id": 2
   },
   {
-    "title": "Regards",
-    "text": "34423",
+    "title": "Three Notes to Start",
+    "text": "512-555-1212",
     "id": 3
   }
 ]

@@ -60,7 +60,6 @@ function indexNotes(notes) {
  */
 function init() {
   // Load the notes from the database
-  let notes = loadNotes();
 
   // Serve static files from public directory
   app.use(express.static('public'));
@@ -81,7 +80,7 @@ function init() {
     .get((req, res) => {
       // Request to get all notes, returns notes array
       debug("GET NOTES");
-      res.send(notes);
+      res.send(loadNotes());
     })
 
     .post((req, res) => {
@@ -93,6 +92,7 @@ function init() {
         // Push the note to the notes array
         // Save the notes array to file
         // Send the response (new note object)
+        let notes = loadNotes()
         req.body.id = notes.length + 1;
         notes.push(req.body);
         saveNotes(notes);
@@ -108,6 +108,7 @@ function init() {
     // Make sure the index is valid before deleting
     debug("DELETE NOTE", req.params);
     const index = req.params.id - 1;
+    let notes = loadNotes();
     if (index >= 0 && index < notes.length) {
       // Remove the note at index from the array 
       // re-index the Notes 
