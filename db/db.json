@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "title": "Note 1",
+    "text": "Text for note 1\nwith multiple lines\n3 to be exact.",
+    "id": 1
+  },
+  {
+    "title": "Note 3 for a 3rd time",
+    "text": "Keeps going",
+    "id": 2
+  },
+  {
+    "title": "No editing?",
+    "text": "Can't edit notes",
+    "id": 3
+  },
+  {
+    "title": "4th msg",
+    "text": "sdfsasad",
+    "id": 4
+  }
+]
