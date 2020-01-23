@@ -42,18 +42,27 @@ class Notes {
   /**
    * Add a Note to the array
    * @param {Object} bodyObject note containing 'title' and 'text' to add
+   *
+   * @returns {Object}
+   * new Note object or null if unable to add note
    */
   addNote(bodyObject) {
     //this.loadNotes();
-    const newId = this.data.length + 1;
-    const parsedObject = {
-      id: newId,
-      title: bodyObject.title,
-      text: bodyObject.text
-    };
-    this.data.push(parsedObject);
-    this.saveNotes();
-    return parsedObject;
+
+    if (bodyObject && bodyObject.title  && bodyObject.text)
+    {
+      const newId = this.data.length + 1;
+      const parsedObject = {
+        id: newId,
+        title: bodyObject.title,
+        text: bodyObject.text
+      };
+      this.data.push(parsedObject);
+      this.saveNotes();
+      return parsedObject; 
+    } else {
+      return null;
+    }
   }
 
   /**

@@ -11,15 +11,14 @@ const path_public = path.join(__dirname, "public"); // Need an absolute path
 
 /**
  * Print output if in debug mode
- * 
- * @param  {...any} str 
+ *
+ * @param  {...any} str
  */
 function debugOut(...str) {
   if (_debug) {
     console.log(...str);
   }
 }
-
 
 /**
  * Initialize the Webserver and Notes array then run the Webserver
@@ -52,9 +51,9 @@ function init() {
 
     .post((req, res) => {
       debugOut("POST NOTE BODY", req.body);
-      if (req.body && req.body.title && req.body.text) {
-        let note = notes.addNote(req.body);
-        res.send(note);
+      let newNote = notes.addNote(req.body);
+      if (newNote) {
+        res.send(newNote);
       } else {
         // Something was wrong with the body
         res.send("Missing Payload", 400);
