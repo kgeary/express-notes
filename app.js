@@ -9,7 +9,12 @@ const app = express();
 const port = process.env.PORT || 80;
 const path_public = path.join(__dirname, "public"); // Need an absolute path
 
-function debug(...str) {
+/**
+ * Print output if in debug mode
+ * 
+ * @param  {...any} str 
+ */
+function debugOut(...str) {
   if (_debug) {
     console.log(...str);
   }
@@ -22,6 +27,8 @@ function debug(...str) {
 function init() {
   // Load the notes from the database
   let notes = new Notes();
+  notes.loadNotes(true);
+
   // Serve static files from public directory
   app.use(express.static("public"));
 
@@ -39,12 +46,12 @@ function init() {
   app
     .route("/api/notes")
     .get((req, res) => {
-      debug("GET ALL NOTES");
+      debugOut("GET ALL NOTES");
       res.send(notes.loadNotes());
     })
 
     .post((req, res) => {
-      debug("POST NOTE BODY", req.body);
+      debugOut("POST NOTE BODY", req.body);
       if (req.body && req.body.title && req.body.text) {
         let note = notes.addNote(req.body);
         res.send(note);
@@ -55,7 +62,7 @@ function init() {
     });
 
   app.delete("/api/notes/:id", (req, res) => {
-    debug("DELETE NOTE", req.params);
+    debugOut("DELETE NOTE", req.params);
     const index = req.params.id - 1; // Convert 1-based to 0-based index
     const deletedNote = notes.deleteNote(index);
     if (deletedNote) {
@@ -67,7 +74,7 @@ function init() {
 
   // GET (Default Route, Anything not caught above will filter here)
   app.get("*", (req, res) => {
-    debug("Default URL", req.url);
+    debugOut("Default URL", req.url);
     res.sendFile("index.html", { root: path_public });
   });
 
