@@ -20,13 +20,17 @@ function debugOut(...str) {
   }
 }
 
+function deleteNote(res) {
+
+}
+
 /**
  * Initialize the Webserver and Notes array then run the Webserver
  */
 function init() {
   // Load the notes from the database
   let notes = new Notes();
-  notes.loadNotes(true);
+  notes.load(true);
 
   // Serve static files from public directory
   app.use(express.static("public"));
@@ -42,18 +46,17 @@ function init() {
   });
 
   // Route [get, post] /api/notes
-  app
-    .route("/api/notes")
+  app.route("/api/notes")
     .get((req, res) => {
       debugOut("GET ALL NOTES");
-      res.send(notes.loadNotes());
+      res.json(notes.load());
     })
 
     .post((req, res) => {
       debugOut("POST NOTE BODY", req.body);
-      let newNote = notes.addNote(req.body);
+      let newNote = notes.add(req.body);
       if (newNote) {
-        res.send(newNote);
+        res.json(newNote);
       } else {
         // Something was wrong with the body
         res.send("Missing Payload", 400);
@@ -63,9 +66,9 @@ function init() {
   app.delete("/api/notes/:id", (req, res) => {
     debugOut("DELETE NOTE", req.params);
     const index = req.params.id - 1; // Convert 1-based to 0-based index
-    const deletedNote = notes.deleteNote(index);
+    const deletedNote = notes.remove(index);
     if (deletedNote) {
-      res.send(deletedNote);
+      res.json(deletedNote);
     } else {
       res.send("Invalid Index", 404);
     }

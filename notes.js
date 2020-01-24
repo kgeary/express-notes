@@ -13,18 +13,18 @@ class Notes {
   /**
    * Index the id's of all notes to make sure they are unique
    */
-  indexNotes() {
+  index() {
     this.data.forEach((el, index) => (el.id = index + 1));
   }
 
   /** Load the notes array from file
    * @param {boolean} indexData
    */
-  loadNotes(indexData = false) {
+  load(indexData = false) {
     try {
       this.data = JSON.parse(fs.readFileSync(path_db, "utf8"));
       if (indexData) {
-        this.indexNotes();
+        this.index();
       }
     } catch (err) {
       this.data = [];
@@ -35,7 +35,7 @@ class Notes {
   /**
    * Save the notes arrary to file
    */ 
-  saveNotes() {
+  save() {
     fs.writeFileSync(path_db, JSON.stringify(this.data, null, 2));
   }
 
@@ -46,8 +46,8 @@ class Notes {
    * @returns {Object}
    * new Note object or null if unable to add note
    */
-  addNote(bodyObject) {
-    //this.loadNotes();
+  add(bodyObject) {
+    //this.load();
 
     if (bodyObject && bodyObject.title  && bodyObject.text)
     {
@@ -58,7 +58,7 @@ class Notes {
         text: bodyObject.text
       };
       this.data.push(parsedObject);
-      this.saveNotes();
+      this.save();
       return parsedObject; 
     } else {
       return null;
@@ -71,12 +71,12 @@ class Notes {
    * @returns {Object}
    * the deleted note or null on invalid index
    */
-  deleteNote(index) {
-    //this.loadNotes();
+  remove(index) {
+    //this.load();
     if (index >= 0 && index < this.data.length) {
       const deletedNote = this.data.splice(index, 1);
-      this.indexNotes();
-      this.saveNotes();
+      this.index();
+      this.save();
       return deletedNote;
     } else {
       return null;
