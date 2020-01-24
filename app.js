@@ -6,7 +6,7 @@ const Notes = require("./notes");
 // globals
 const _debug = process.argv[2] === "debug";
 const app = express();
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3000;
 const path_public = path.join(__dirname, "public"); // Need an absolute path
 
 /**
