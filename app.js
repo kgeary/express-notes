@@ -20,10 +20,6 @@ function debugOut(...str) {
   }
 }
 
-function deleteNote(res) {
-
-}
-
 /**
  * Initialize the Webserver and Notes array then run the Webserver
  */
@@ -40,6 +36,9 @@ function init() {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
+  app.get("/", (req, res) => {
+    res.sendFile("index.html", { root: path_public });
+  });
   app.get("/notes", (req, res) => {
     // Return the notes html page
     res.sendFile("notes.html", { root: path_public });
@@ -77,7 +76,7 @@ function init() {
   // GET (Default Route, Anything not caught above will filter here)
   app.get("*", (req, res) => {
     debugOut("Default URL", req.url);
-    res.sendFile("index.html", { root: path_public });
+    res.redirect("/");
   });
 
   // Start the server
